@@ -7,7 +7,7 @@
     "build": "NODE_OPTIONS=--max_old_space_size=8192 tsc -p tsconfig.json",
     "server": "node ./src/index.js",
     "start": "node dist/index.js",
-    "dev": " nodemon -e ts --exec ts-node --project tsconfig.json -r tsconfig-paths/register ./index.ts",
+    "dev": " nodemon -e ts --exec ts-node --project tsconfig.json -r tsconfig-paths/register ./src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
