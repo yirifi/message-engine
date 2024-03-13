@@ -1,4 +1,19 @@
 import { Kafka } from "kafkajs";
+import { SendEmail } from "./services/zeptoMailService";
+
+const red = "\x1b[31m";
+const green = "\x1b[32m";
+const reset = "\x1b[0m";
+
+SendEmail(
+	{
+		to: ["saj3sh@gmail.com"],
+		body: "This is test email",
+		subject: "Test Email",
+		bodyType: "Text"
+	}
+).then(_ => console.log(`${green}[email] sending successful${reset}`))
+	.catch(err => console.log(`${red}[email] ${err}${reset}`))
 
 async function main() {
 	const brokers = [process.env.BOOTSTRAP_SERVERS]; // Assuming 'bootstrap.servers=your_broker_list' is in your config
@@ -35,4 +50,5 @@ async function main() {
 	await producer.disconnect();
 }
 
-main().catch(console.error);
+// main().catch(console.error);
+

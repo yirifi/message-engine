@@ -8,27 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const kafkajs_1 = require("kafkajs");
-const fs_1 = __importDefault(require("fs"));
-function readConfig(fileName) {
-    const data = fs_1.default.readFileSync(fileName, "utf8").toString().split("\n");
-    return data.reduce((config, line) => {
-        const [key, value] = line.split("=");
-        if (key && value) {
-            config[key.trim()] = value.trim();
-        }
-        return config;
-    }, {});
-}
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        const config = readConfig("client.properties");
-        console.log(config);
-        const brokers = [config["bootstrap.servers"]]; // Assuming 'bootstrap.servers=your_broker_list' is in your config
+        const brokers = [process.env.BOOTSTRAP_SERVERS]; // Assuming 'bootstrap.servers=your_broker_list' is in your config
         const topic = "my_topic";
         const key = "Hell";
         const value = "oOOO";
@@ -38,9 +22,9 @@ function main() {
             brokers: brokers, // KafkaJS accepts an array of brokers
             ssl: true, // Adjust according to your security config
             sasl: {
-                mechanism: config["sasl.mechanisms"],
-                username: config["sasl.username"],
-                password: config["sasl.password"],
+                mechanism: process.env.SASL_MECHANISMS,
+                username: process.env.SASL_USERNAME,
+                password: process.env.SASL_PASSWORD,
             },
             // Additional security configuration might be required depending on your Kafka setup
         });
