@@ -1,0 +1,10 @@
+.idea/
+.vscode/
+node_modules/
+build/
+tmp/
+temp/
+newrelic_agent.log
+.env
+.env.example
+xano_tables_schema/
