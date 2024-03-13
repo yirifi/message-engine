@@ -1,0 +1,14 @@
+version: "3"
+services:
+  backend:
+    restart: always
+    container_name: "backend"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    build:
+      context: .
+      dockerfile: ./Dockerfile.prod
+    environment:
+      NODE_PATH: ./src
+    env_file:
+      - .env

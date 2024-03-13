@@ -4,15 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "NODE_OPTIONS=--max_old_space_size=8192 tsc -p tsconfig.json",
+    "server": "node ./src/index.js",
     "start": "node dist/index.js",
+    "dev": " nodemon -e ts --exec ts-node --project tsconfig.json -r tsconfig-paths/register ./index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.11.25",
-    "typescript": "^5.4.2"
+    "nodemon": "^3.1.0",
+    "typescript": "^5.4.2",
+    "ts-node": "^10.7.0",
+		"tsconfig-paths": "^4.2.0"
   },
   "dependencies": {
     "kafkajs": "^2.2.4"

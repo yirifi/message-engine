@@ -1,0 +1,18 @@
+FROM node:18.13.0  as build
+WORKDIR /usr/app
+RUN #apk add --no-cache gcc g++ python make
+
+COPY package.json yarn.lock ./
+RUN yarn
+
+COPY ./ ./
+RUN yarn build
+
+FROM node:18.13.0
+WORKDIR /usr/app
+
+COPY --from=build /usr/app/dist .
+COPY --from=build /usr/app/node_modules ./node_modules/
+COPY --from=build /usr/app/package.json ./package.json
+#CMD ["sh","-c","npm run migration:generate && npm run migration:run && npm run server "]
+CMD ["sh","-c","npm run server"]

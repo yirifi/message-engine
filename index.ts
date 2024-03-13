@@ -1,21 +1,7 @@
 import { Kafka } from "kafkajs";
-import fs from "fs";
-
-function readConfig(fileName) {
-	const data = fs.readFileSync(fileName, "utf8").toString().split("\n");
-	return data.reduce((config, line) => {
-		const [key, value] = line.split("=");
-		if (key && value) {
-			config[key.trim()] = value.trim();
-		}
-		return config;
-	}, {});
-}
 
 async function main() {
-	const config = readConfig("client.properties");
-	console.log(config);
-	const brokers = [config["bootstrap.servers"]]; // Assuming 'bootstrap.servers=your_broker_list' is in your config
+	const brokers = [process.env.BOOTSTRAP_SERVERS]; // Assuming 'bootstrap.servers=your_broker_list' is in your config
 	const topic = "my_topic";
 	const key = "Hell";
 	const value = "oOOO";
@@ -26,9 +12,9 @@ async function main() {
 		brokers: brokers, // KafkaJS accepts an array of brokers
 		ssl: true, // Adjust according to your security config
 		sasl: {
-			mechanism: config["sasl.mechanisms"],
-			username: config["sasl.username"],
-			password: config["sasl.password"],
+			mechanism: process.env.SASL_MECHANISMS as any,
+			username: process.env.SASL_USERNAME,
+			password: process.env.SASL_PASSWORD,
 		},
 		// Additional security configuration might be required depending on your Kafka setup
 	});
