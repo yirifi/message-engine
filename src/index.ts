@@ -8,12 +8,14 @@ const reset = "\x1b[0m";
 SendEmail(
 	{
 		to: ["saj3sh@gmail.com"],
-		body: "This is test email",
+		body: "This is test email from saj3sh@gmail.com",
 		subject: "Test Email",
-		bodyType: "Text"
+		bodyType: "Text",
+		mergeInfo: {"product name":"Yirify","data_time":new Date(),"support id":"12345","brand":"Brandy","username":"saj3sh","token":"123456"},
+		templateKey: "13ef.6c70491045e62bb9.k1.62c7d780-e07a-11ee-9270-525400b65433.18e3300ccf8"
 	}
 ).then(_ => console.log(`${green}[email] sending successful${reset}`))
-	.catch(err => console.log(`${red}[email] ${err}${reset}`))
+	.catch(err => console.log(`${red}[email] ${JSON.stringify(err)}${reset}`))
 
 async function main() {
 	const brokers = [process.env.BOOTSTRAP_SERVERS]; // Assuming 'bootstrap.servers=your_broker_list' is in your config

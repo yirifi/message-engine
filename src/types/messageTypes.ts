@@ -1,4 +1,4 @@
-export interface EmailMessage {
+export interface Email {
     to: string[];
     subject: string;
     body: string;
@@ -8,3 +8,8 @@ export interface EmailMessage {
 }
 
 export type EmailBodyType = "Text" | "HTML";
+
+export interface TemplateEmail extends Email {
+    templateKey: string;
+    mergeInfo: { [key: string]: any };
+}

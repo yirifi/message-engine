@@ -1,0 +1,1 @@
+type topic = "Email" | "TemplateEmail"
