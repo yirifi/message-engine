@@ -4,7 +4,9 @@ import { Email, TemplateEmail } from "../types/messageTypes";
 
 export async function SendEmail(params: Email | TemplateEmail) {
     const isTemplateEmail = "templateKey" in params && "mergeInfo" in params;
-    let client = new SendMailClient({ url: isTemplateEmail ? TEMPLATE_API_URL : API_URL, token: process.env.ZEPTOMAIL_TOKEN });
+    
+    let url = isTemplateEmail ? TEMPLATE_API_URL : API_URL
+    let client = new SendMailClient({ url, token: process.env.ZEPTOMAIL_TOKEN });
 
     params.bodyType ??= "HTML"; //default email body type as HTML
     const body = params.bodyType === "HTML" ? { "htmlbody": params.body } : { "textbody": params.body };

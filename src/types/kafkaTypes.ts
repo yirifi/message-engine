@@ -1,1 +1,0 @@
-type topic = "Email" | "TemplateEmail"

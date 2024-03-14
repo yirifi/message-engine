@@ -1,56 +1,44 @@
-import { Kafka } from "kafkajs";
+import { WHATS_MY_NAME_AGAIN } from "./config/general";
 import { SendEmail } from "./services/zeptoMailService";
+import { MessageTopics } from "./types/messageTypes";
+import { Kafka } from 'kafkajs';
 
-const red = "\x1b[31m";
-const green = "\x1b[32m";
-const reset = "\x1b[0m";
-
-SendEmail(
-	{
-		to: ["saj3sh@gmail.com"],
-		body: "This is test email from saj3sh@gmail.com",
-		subject: "Test Email",
-		bodyType: "Text",
-		mergeInfo: {"product name":"Yirify","data_time":new Date(),"support id":"12345","brand":"Brandy","username":"saj3sh","token":"123456"},
-		templateKey: "13ef.6c70491045e62bb9.k1.62c7d780-e07a-11ee-9270-525400b65433.18e3300ccf8"
+const kafka = new Kafka({
+	clientId: "message-engine",
+	brokers: [process.env.BOOTSTRAP_SERVERS],
+	ssl: true,
+	sasl: {
+		mechanism: process.env.SASL_MECHANISMS as any,
+		username: process.env.SASL_USERNAME,
+		password: process.env.SASL_PASSWORD,
 	}
-).then(_ => console.log(`${green}[email] sending successful${reset}`))
-	.catch(err => console.log(`${red}[email] ${JSON.stringify(err)}${reset}`))
+});
 
-async function main() {
-	const brokers = [process.env.BOOTSTRAP_SERVERS]; // Assuming 'bootstrap.servers=your_broker_list' is in your config
-	const topic = "my_topic";
-	const key = "Hell";
-	const value = "oOOO";
+const consumer = kafka.consumer({ groupId: 'message-engine-group' });
 
-	// Initialize Kafka client and producer
-	const kafka = new Kafka({
-		clientId: "my-app", // or use config['client.id'] if defined
-		brokers: brokers, // KafkaJS accepts an array of brokers
-		ssl: true, // Adjust according to your security config
-		sasl: {
-			mechanism: process.env.SASL_MECHANISMS as any,
-			username: process.env.SASL_USERNAME,
-			password: process.env.SASL_PASSWORD,
+const run = async () => {
+	await consumer.connect();
+
+	//define message related topics in MessageTopics enum
+	for (const [_, value] of Object.entries(MessageTopics)) {
+		await consumer.subscribe({ topic: value, fromBeginning: true });
+	}
+
+	await consumer.run({
+		eachMessage: async ({ topic, partition, message }) => {
+			let messageObj = JSON.parse(message.value.toString());
+			switch (topic) {
+				case MessageTopics.Email:
+					SendEmail(messageObj)
+						.catch(err => {
+							console.error(`[${WHATS_MY_NAME_AGAIN}] ${topic} failed. Error Info: ${JSON.stringify(err)}`);
+						});
+					break;
+				default:
+					break;
+			}
 		},
-		// Additional security configuration might be required depending on your Kafka setup
 	});
+};
 
-	const producer = kafka.producer();
-
-	await producer.connect();
-	await producer.send({
-		topic: topic,
-		messages: [{ key: key, value: value }],
-	});
-
-	console.log(
-		`Produced message to topic ${topic}: key = ${key}, value = ${value}`
-	);
-
-	// It's important to gracefully disconnect the producer when done
-	await producer.disconnect();
-}
-
-// main().catch(console.error);
-
+run().catch(console.error);

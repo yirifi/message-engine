@@ -13,3 +13,8 @@ export interface TemplateEmail extends Email {
     templateKey: string;
     mergeInfo: { [key: string]: any };
 }
+
+export enum MessageTopics
+{
+    Email = "send-email"
+}
