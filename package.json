@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "NODE_OPTIONS=--max_old_space_size=8192 tsc -p tsconfig.json",
-    "server": "node ./src/index.js",
-    "start": "node dist/index.js",
+    "server": "node ./dist/index.js",
+    "start": "ts-node  -r tsconfig-paths/register src/index.ts",
     "dev": " nodemon -e ts --exec ts-node --project tsconfig.json -r tsconfig-paths/register ./src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
