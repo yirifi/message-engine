@@ -3,7 +3,7 @@
 
 ## Overview
 
-At its core, message-engine is a Node.js worker designed to consume messages from Kafka, process them, and then dispatch them to the appropriate services according to their topic. Currently, it includes functionality to send emails via the ZeptoMail service, responding to messages categorized under **`send-email`** topic.
+At its core, message-engine is a Node.js worker designed to consume messages from Kafka, process them, and then dispatch them to the appropriate services according to their topic. Currently, it includes functionality to send emails via the ZeptoMail service, responding to messages categorized under `send-email` topic.
 
 ## Prerequisites
 
@@ -15,7 +15,7 @@ Before you start, ensure you have the following:
 - Access to environment variables for Kafka configuration and ZeptoMail API
 - It's crucial to **create the required Kafka topics beforehand**. 
     The topics should include those expected by the application for consuming messages.
-    Topics are defined within the **`MessageTopics`** enum, located in `src/types/messageTypes`.
+    Topics are defined within the **`MessageTopics`** enum, located in `src/types/messageTypes.ts`.
 
 ## Installation
 
@@ -64,12 +64,14 @@ This command initiates the Kafka consumer, which will listen for messages on con
 
 ## Services
 
-Currently, the application supports sending emails via the ZeptoMail API. We can extend the application with more services:
+Currently, the application supports sending emails via the ZeptoMail API. To dispatch emails through ZeptoMail, produce a Kafka message targeting the `send-email` topic. This message should be a JSON string adhering to the structure defined by either the **`Email`** or **`TemplateEmail`** interface, as specified in `src/types/messageTypes.ts`.
+
+We can extend the application with more services:
 
 1. Create a new service file in `src/services/`.
 2. Implement your service logic.
-3. Include kafka topic for the service within the **`MessageTopics`** enum, located in `src/types/messageTypes`.
-4. Import and use your service in `src/index.ts` based on the kafka topic.
+3. Include kafka topic for the service within the **`MessageTopics`** enum, located in `src/types/messageTypes.ts`.
+4. Import and use your service in `src/index.ts` based on specific kafka topic.
 
 ## Deployment
 
